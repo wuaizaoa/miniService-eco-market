@@ -12,7 +12,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication(scanBasePackages = "com.sg.ecomarket")
 @EnableDiscoveryClient
 @EnableFeignClients
-@MapperScan("com.sg.ecomarket.order.infra.mapper")
+@MapperScan("com.sg.ecomarket.order.infrastructure.mapper")
 public class OrderApplication {
 
     public static void main(String[] args) {

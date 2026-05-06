@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 
-@FeignClient(name = "product-service")
+@FeignClient(name = "product-service", url = "http://localhost:8082")
 public interface ProductServiceClient {
 
     @GetMapping("/api/product/{id}")
