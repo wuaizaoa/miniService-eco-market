@@ -8,6 +8,7 @@
         <module>eco-market-common</module>
         <module>user-service</module>
         <module>product-service</module>
+        <module>order-service</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -144,6 +145,31 @@
             <dependency>
                 <groupId>com.sg</groupId>
                 <artifactId>product-service-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sg</groupId>
+                <artifactId>order-service-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sg</groupId>
+                <artifactId>order-service-app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sg</groupId>
+                <artifactId>order-service-adapter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sg</groupId>
+                <artifactId>order-service-infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sg</groupId>
+                <artifactId>order-service-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
