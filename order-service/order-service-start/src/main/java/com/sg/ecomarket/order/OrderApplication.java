@@ -6,10 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
+/**
+ * 订单服务启动类
+ */
 @SpringBootApplication(scanBasePackages = "com.sg.ecomarket")
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = "com.sg.ecomarket")
-@MapperScan("com.sg.ecomarket.order.infrastructure.mapper")
+@EnableFeignClients
+@MapperScan("com.sg.ecomarket.order.infra.mapper")
 public class OrderApplication {
 
     public static void main(String[] args) {
