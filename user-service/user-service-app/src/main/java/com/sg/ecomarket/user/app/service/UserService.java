@@ -78,7 +78,7 @@ public class UserService {
         // 生成Token
         String token = jwtUtil.generateToken(user.getId(), user.getUsername());
 
-        return new LoginDTO(toDTO(user), token);
+        return new LoginDTO(user.getId(), user.getUsername(), token);
     }
 
     /**

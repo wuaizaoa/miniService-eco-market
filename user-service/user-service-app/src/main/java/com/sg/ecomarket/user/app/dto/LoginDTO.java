@@ -13,9 +13,14 @@ import lombok.NoArgsConstructor;
 public class LoginDTO {
 
     /**
-     * 用户信息
+     * 用户ID
      */
-    private UserDTO user;
+    private Long id;
+
+    /**
+     * 用户名
+     */
+    private String username;
 
     /**
      * Token
