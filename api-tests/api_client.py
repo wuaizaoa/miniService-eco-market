@@ -78,7 +78,7 @@ class APIClient:
         return self._request("GET", f"{Config.PRODUCT_API}")
     
     def get_products_by_category(self, category_id: int) -> requests.Response:
-        return self._request("GET", f"{Config.PRODUCT_API}/category/{category_id}")
+        return self._request("GET", f"{Config.PRODUCT_API}/by-category/{category_id}")
     
     def delete_product(self, product_id: int) -> requests.Response:
         return self._request("DELETE", f"{Config.PRODUCT_API}/{product_id}")

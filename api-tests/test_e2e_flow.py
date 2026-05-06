@@ -54,7 +54,7 @@ class TestE2EFlow:
         cart_response = api_client.get_cart(user_id)
         assert cart_response.status_code == 200
         cart_items = cart_response.json()["data"]
-        assert len(cart_items) &gt; 0
+        assert len(cart_items) > 0
         allure.attach(str(cart_items), "购物车内容", allure.attachment_type.JSON)
         
         allure.step("6. 创建订单")
