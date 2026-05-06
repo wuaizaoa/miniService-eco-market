@@ -60,7 +60,7 @@ public class ProductController {
     /**
      * 根据分类ID查询商品
      */
-    @GetMapping("/category/{categoryId}")
+    @GetMapping("/by-category/{categoryId}")
     public Result<List<ProductDTO>> getByCategoryId(@PathVariable Long categoryId) {
         List<ProductDTO> productDTOList = productService.getByCategoryId(categoryId);
         return Result.success(productDTOList);
