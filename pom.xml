@@ -6,6 +6,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>eco-market-common</module>
+        <module>user-service</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -27,6 +28,7 @@
         <cola.version>4.3.1</cola.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <jwt.version>0.11.5</jwt.version>
+        <mysql.version>8.0.33</mysql.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -90,6 +92,36 @@
                 <groupId>com.sg</groupId>
                 <artifactId>eco-market-common</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sg</groupId>
+                <artifactId>user-service-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sg</groupId>
+                <artifactId>user-service-app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sg</groupId>
+                <artifactId>user-service-adapter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sg</groupId>
+                <artifactId>user-service-infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sg</groupId>
+                <artifactId>user-service-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
