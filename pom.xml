@@ -216,6 +216,8 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
