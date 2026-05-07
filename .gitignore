@@ -39,6 +39,7 @@ build/
 
 ### Trae ###
 .trae/
+.lingma/
 
 ### Python ###
 __pycache__/
