@@ -12,6 +12,7 @@ public enum ErrorCode {
     PARAM_ERROR(400, "参数错误"),
     UNAUTHORIZED(401, "未授权"),
     FORBIDDEN(403, "禁止访问"),
+    ADMIN_REQUIRED(403, "需要管理员权限"),
     NOT_FOUND(404, "资源不存在"),
 
     USER_NOT_FOUND(1001, "用户不存在"),
