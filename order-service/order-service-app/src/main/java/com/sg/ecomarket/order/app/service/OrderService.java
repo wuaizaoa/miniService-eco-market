@@ -133,6 +133,37 @@ public class OrderService {
     }
 
     /**
+     * 管理员查询所有订单
+     */
+    public List<OrderDTO> adminListAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    /**
+     * 管理员查询订单详情
+     */
+    public OrderDTO adminGetOrderDetail(Long orderId) {
+        Order order = orderRepository.findWithItemsById(orderId);
+        if (order == null) {
+            throw new BizException("订单不存在");
+        }
+        return toDTO(order);
+    }
+
+    /**
+     * 管理员更新订单状态
+     */
+    public OrderDTO adminUpdateOrderStatus(Long orderId, Integer status) {
+        Order order = orderRepository.findById(orderId);
+        if (order == null) {
+            throw new BizException("订单不存在");
+        }
+        updateOrderStatus(orderId, status);
+        return getOrderById(orderId);
+    }
+
+    /**
      * 转换为DTO
      */
     private OrderDTO toDTO(Order order) {
