@@ -1,14 +1,18 @@
 package com.sg.ecomarket.order.app.service;
 
+import com.sg.ecomarket.common.enums.ErrorCode;
 import com.sg.ecomarket.common.exception.BizException;
 import com.sg.ecomarket.common.result.Result;
 import com.sg.ecomarket.order.client.ProductServiceClient;
 import com.sg.ecomarket.order.app.cmd.CreateOrderCmd;
 import com.sg.ecomarket.order.app.dto.OrderDTO;
 import com.sg.ecomarket.order.app.dto.OrderItemDTO;
+import com.sg.ecomarket.order.app.util.JwtUtil;
 import com.sg.ecomarket.order.domain.entity.Order;
 import com.sg.ecomarket.order.domain.entity.OrderItem;
 import com.sg.ecomarket.order.domain.repository.OrderRepository;
+import com.sg.ecomarket.order.infra.dataobject.UserDO;
+import com.sg.ecomarket.order.infra.mapper.UserMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,9 @@ public class OrderService {
 
     @Resource
     private ProductServiceClient productServiceClient;
+
+    @Resource
+    private UserMapper userMapper;
 
     /**
      * 创建订单
@@ -135,7 +142,8 @@ public class OrderService {
     /**
      * 管理员查询所有订单
      */
-    public List<OrderDTO> adminListAllOrders() {
+    public List<OrderDTO> adminListAllOrders(Long adminUserId) {
+        checkAdminPermission(adminUserId);
         List<Order> orders = orderRepository.findAll();
         return orders.stream().map(this::toDTO).collect(Collectors.toList());
     }
@@ -143,7 +151,8 @@ public class OrderService {
     /**
      * 管理员查询订单详情
      */
-    public OrderDTO adminGetOrderDetail(Long orderId) {
+    public OrderDTO adminGetOrderDetail(Long adminUserId, Long orderId) {
+        checkAdminPermission(adminUserId);
         Order order = orderRepository.findWithItemsById(orderId);
         if (order == null) {
             throw new BizException("订单不存在");
@@ -154,13 +163,24 @@ public class OrderService {
     /**
      * 管理员更新订单状态
      */
-    public OrderDTO adminUpdateOrderStatus(Long orderId, Integer status) {
+    public OrderDTO adminUpdateOrderStatus(Long adminUserId, Long orderId, Integer status) {
+        checkAdminPermission(adminUserId);
         Order order = orderRepository.findById(orderId);
         if (order == null) {
             throw new BizException("订单不存在");
         }
         updateOrderStatus(orderId, status);
         return getOrderById(orderId);
+    }
+
+    /**
+     * 验证管理员权限
+     */
+    private void checkAdminPermission(Long userId) {
+        UserDO userDO = userMapper.selectById(userId);
+        if (userDO == null || !"admin".equals(userDO.getRole())) {
+            throw new BizException(ErrorCode.ADMIN_REQUIRED);
+        }
     }
 
     /**

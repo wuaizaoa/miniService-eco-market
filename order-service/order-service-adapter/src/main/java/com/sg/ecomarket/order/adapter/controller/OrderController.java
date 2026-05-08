@@ -6,6 +6,7 @@ import com.sg.ecomarket.order.app.cmd.CreateOrderCmd;
 import com.sg.ecomarket.order.app.cmd.UpdateOrderStatusCmd;
 import com.sg.ecomarket.order.app.dto.OrderDTO;
 import com.sg.ecomarket.order.app.service.OrderService;
+import com.sg.ecomarket.order.app.util.JwtUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,9 @@ public class OrderController {
 
     @Resource
     private ProductServiceClient productServiceClient;
+
+    @Resource
+    private JwtUtil jwtUtil;
 
     /**
      * 创建订单
@@ -63,11 +67,23 @@ public class OrderController {
     }
 
     /**
+     * 从Authorization头中提取Token
+     */
+    private Long getAdminUserIdFromToken(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            return jwtUtil.getUserIdFromToken(token);
+        }
+        throw new IllegalArgumentException("无效的授权头");
+    }
+
+    /**
      * 管理员查询所有订单
      */
     @GetMapping("/admin/list")
-    public Result<List<OrderDTO>> adminListAllOrders() {
-        List<OrderDTO> orderList = orderService.adminListAllOrders();
+    public Result<List<OrderDTO>> adminListAllOrders(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        Long adminUserId = getAdminUserIdFromToken(authHeader);
+        List<OrderDTO> orderList = orderService.adminListAllOrders(adminUserId);
         return Result.success(orderList);
     }
 
@@ -75,8 +91,10 @@ public class OrderController {
      * 管理员查询订单详情
      */
     @GetMapping("/admin/{id}")
-    public Result<OrderDTO> adminGetOrderDetail(@PathVariable Long id) {
-        OrderDTO orderDTO = orderService.adminGetOrderDetail(id);
+    public Result<OrderDTO> adminGetOrderDetail(@RequestHeader(value = "Authorization", required = false) String authHeader,
+                                                 @PathVariable Long id) {
+        Long adminUserId = getAdminUserIdFromToken(authHeader);
+        OrderDTO orderDTO = orderService.adminGetOrderDetail(adminUserId, id);
         return Result.success(orderDTO);
     }
 
@@ -84,9 +102,12 @@ public class OrderController {
      * 管理员更新订单状态
      */
     @PutMapping("/admin/{id}/status")
-    public Result<OrderDTO> adminUpdateOrderStatus(@PathVariable Long id, @RequestBody Map<String, Integer> request) {
+    public Result<OrderDTO> adminUpdateOrderStatus(@RequestHeader(value = "Authorization", required = false) String authHeader,
+                                                   @PathVariable Long id,
+                                                   @RequestBody Map<String, Integer> request) {
+        Long adminUserId = getAdminUserIdFromToken(authHeader);
         Integer status = request.get("status");
-        OrderDTO orderDTO = orderService.adminUpdateOrderStatus(id, status);
+        OrderDTO orderDTO = orderService.adminUpdateOrderStatus(adminUserId, id, status);
         return Result.success(orderDTO);
     }
 }
