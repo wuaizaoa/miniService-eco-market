@@ -46,6 +46,11 @@ public class User {
     private Integer status;
 
     /**
+     * 角色：user/admin
+     */
+    private String role;
+
+    /**
      * 创建时间
      */
     private Date createdAt;
