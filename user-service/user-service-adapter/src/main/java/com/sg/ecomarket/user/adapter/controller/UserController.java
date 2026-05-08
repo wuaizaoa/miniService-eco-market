@@ -7,6 +7,7 @@ import com.sg.ecomarket.user.app.cmd.RegisterCmd;
 import com.sg.ecomarket.user.app.dto.LoginDTO;
 import com.sg.ecomarket.user.app.dto.UserDTO;
 import com.sg.ecomarket.user.app.service.UserService;
+import com.sg.ecomarket.user.app.util.JwtUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,9 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private JwtUtil jwtUtil;
 
     /**
      * 用户注册
@@ -51,11 +55,22 @@ public class UserController {
     }
 
     /**
+     * 从Authorization头中提取Token
+     */
+    private Long getAdminUserIdFromToken(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            return jwtUtil.getUserIdFromToken(token);
+        }
+        throw new IllegalArgumentException("无效的授权头");
+    }
+
+    /**
      * 管理员查询所有用户
      */
     @GetMapping("/admin/list")
-    public Result<List<UserDTO>> adminListAllUsers() {
-        Long adminUserId = 1L; // TODO: 从Token解析
+    public Result<List<UserDTO>> adminListAllUsers(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        Long adminUserId = getAdminUserIdFromToken(authHeader);
         List<UserDTO> userList = userService.adminListAllUsers(adminUserId);
         return Result.success(userList);
     }
@@ -64,8 +79,9 @@ public class UserController {
      * 管理员创建用户
      */
     @PostMapping("/admin")
-    public Result<UserDTO> adminCreateUser(@Validated @RequestBody RegisterCmd cmd) {
-        Long adminUserId = 1L; // TODO: 从Token解析
+    public Result<UserDTO> adminCreateUser(@RequestHeader(value = "Authorization", required = false) String authHeader,
+                                           @Validated @RequestBody RegisterCmd cmd) {
+        Long adminUserId = getAdminUserIdFromToken(authHeader);
         UserDTO userDTO = userService.adminCreateUser(adminUserId, cmd);
         return Result.success(userDTO);
     }
@@ -74,8 +90,10 @@ public class UserController {
      * 管理员更新用户
      */
     @PutMapping("/admin/{id}")
-    public Result<UserDTO> adminUpdateUser(@PathVariable Long id, @Validated @RequestBody AdminUserUpdateCmd cmd) {
-        Long adminUserId = 1L; // TODO: 从Token解析
+    public Result<UserDTO> adminUpdateUser(@RequestHeader(value = "Authorization", required = false) String authHeader,
+                                           @PathVariable Long id,
+                                           @Validated @RequestBody AdminUserUpdateCmd cmd) {
+        Long adminUserId = getAdminUserIdFromToken(authHeader);
         cmd.setId(id);
         UserDTO userDTO = userService.adminUpdateUser(adminUserId, cmd);
         return Result.success(userDTO);
@@ -85,8 +103,9 @@ public class UserController {
      * 管理员删除用户
      */
     @DeleteMapping("/admin/{id}")
-    public Result<Void> adminDeleteUser(@PathVariable Long id) {
-        Long adminUserId = 1L; // TODO: 从Token解析
+    public Result<Void> adminDeleteUser(@RequestHeader(value = "Authorization", required = false) String authHeader,
+                                        @PathVariable Long id) {
+        Long adminUserId = getAdminUserIdFromToken(authHeader);
         userService.adminDeleteUser(adminUserId, id);
         return Result.success();
     }
