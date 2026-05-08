@@ -29,6 +29,8 @@ public class UserDO {
 
     private Integer status;
 
+    private String role;
+
     private Date createdAt;
 
     private Date updatedAt;
