@@ -1,14 +1,18 @@
 package com.sg.ecomarket.product.app.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.sg.ecomarket.common.enums.ErrorCode;
 import com.sg.ecomarket.common.exception.BizException;
 import com.sg.ecomarket.product.app.command.ProductCreateCmd;
 import com.sg.ecomarket.product.app.command.ProductQueryCmd;
 import com.sg.ecomarket.product.app.command.ProductUpdateCmd;
 import com.sg.ecomarket.product.app.dto.ProductDTO;
+import com.sg.ecomarket.product.app.util.JwtUtil;
 import com.sg.ecomarket.product.domain.entity.Product;
 import com.sg.ecomarket.product.domain.repository.CategoryRepository;
 import com.sg.ecomarket.product.domain.repository.ProductRepository;
+import com.sg.ecomarket.product.infra.dataobject.UserDO;
+import com.sg.ecomarket.product.infra.mapper.UserMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -29,6 +33,9 @@ public class ProductService {
 
     @Resource
     private CategoryRepository categoryRepository;
+
+    @Resource
+    private UserMapper userMapper;
 
     /**
      * 创建商品
@@ -157,21 +164,24 @@ public class ProductService {
     /**
      * 管理员查询所有商品
      */
-    public List<ProductDTO> adminListAllProducts() {
+    public List<ProductDTO> adminListAllProducts(Long adminUserId) {
+        checkAdminPermission(adminUserId);
         return getAll();
     }
 
     /**
      * 管理员创建商品
      */
-    public ProductDTO adminCreateProduct(ProductCreateCmd cmd) {
+    public ProductDTO adminCreateProduct(Long adminUserId, ProductCreateCmd cmd) {
+        checkAdminPermission(adminUserId);
         return create(cmd);
     }
 
     /**
      * 管理员更新商品
      */
-    public ProductDTO adminUpdateProduct(Long productId, ProductUpdateCmd cmd) {
+    public ProductDTO adminUpdateProduct(Long adminUserId, Long productId, ProductUpdateCmd cmd) {
+        checkAdminPermission(adminUserId);
         cmd.setId(productId);
         return update(cmd);
     }
@@ -179,8 +189,19 @@ public class ProductService {
     /**
      * 管理员删除商品
      */
-    public void adminDeleteProduct(Long productId) {
+    public void adminDeleteProduct(Long adminUserId, Long productId) {
+        checkAdminPermission(adminUserId);
         deleteById(productId);
+    }
+
+    /**
+     * 验证管理员权限
+     */
+    private void checkAdminPermission(Long userId) {
+        UserDO userDO = userMapper.selectById(userId);
+        if (userDO == null || !"admin".equals(userDO.getRole())) {
+            throw new BizException(ErrorCode.ADMIN_REQUIRED);
+        }
     }
 
     private ProductDTO toDTO(Product product) {

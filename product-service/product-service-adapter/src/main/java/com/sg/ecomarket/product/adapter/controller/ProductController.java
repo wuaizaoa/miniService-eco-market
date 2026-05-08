@@ -5,6 +5,7 @@ import com.sg.ecomarket.product.app.command.ProductCreateCmd;
 import com.sg.ecomarket.product.app.command.ProductUpdateCmd;
 import com.sg.ecomarket.product.app.dto.ProductDTO;
 import com.sg.ecomarket.product.app.service.ProductService;
+import com.sg.ecomarket.product.app.util.JwtUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,9 @@ public class ProductController {
 
     @Resource
     private ProductService productService;
+
+    @Resource
+    private JwtUtil jwtUtil;
 
     /**
      * 创建商品
@@ -94,11 +98,23 @@ public class ProductController {
     }
 
     /**
+     * 从Authorization头中提取Token
+     */
+    private Long getAdminUserIdFromToken(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            return jwtUtil.getUserIdFromToken(token);
+        }
+        throw new IllegalArgumentException("无效的授权头");
+    }
+
+    /**
      * 管理员查询所有商品
      */
     @GetMapping("/admin/list")
-    public Result<List<ProductDTO>> adminListAllProducts() {
-        List<ProductDTO> productList = productService.adminListAllProducts();
+    public Result<List<ProductDTO>> adminListAllProducts(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        Long adminUserId = getAdminUserIdFromToken(authHeader);
+        List<ProductDTO> productList = productService.adminListAllProducts(adminUserId);
         return Result.success(productList);
     }
 
@@ -106,8 +122,10 @@ public class ProductController {
      * 管理员创建商品
      */
     @PostMapping("/admin")
-    public Result<ProductDTO> adminCreateProduct(@Validated @RequestBody ProductCreateCmd cmd) {
-        ProductDTO productDTO = productService.adminCreateProduct(cmd);
+    public Result<ProductDTO> adminCreateProduct(@RequestHeader(value = "Authorization", required = false) String authHeader,
+                                                 @Validated @RequestBody ProductCreateCmd cmd) {
+        Long adminUserId = getAdminUserIdFromToken(authHeader);
+        ProductDTO productDTO = productService.adminCreateProduct(adminUserId, cmd);
         return Result.success(productDTO);
     }
 
@@ -115,8 +133,11 @@ public class ProductController {
      * 管理员更新商品
      */
     @PutMapping("/admin/{id}")
-    public Result<ProductDTO> adminUpdateProduct(@PathVariable Long id, @Validated @RequestBody ProductUpdateCmd cmd) {
-        ProductDTO productDTO = productService.adminUpdateProduct(id, cmd);
+    public Result<ProductDTO> adminUpdateProduct(@RequestHeader(value = "Authorization", required = false) String authHeader,
+                                                 @PathVariable Long id,
+                                                 @Validated @RequestBody ProductUpdateCmd cmd) {
+        Long adminUserId = getAdminUserIdFromToken(authHeader);
+        ProductDTO productDTO = productService.adminUpdateProduct(adminUserId, id, cmd);
         return Result.success(productDTO);
     }
 
@@ -124,8 +145,10 @@ public class ProductController {
      * 管理员删除商品
      */
     @DeleteMapping("/admin/{id}")
-    public Result<Void> adminDeleteProduct(@PathVariable Long id) {
-        productService.adminDeleteProduct(id);
+    public Result<Void> adminDeleteProduct(@RequestHeader(value = "Authorization", required = false) String authHeader,
+                                           @PathVariable Long id) {
+        Long adminUserId = getAdminUserIdFromToken(authHeader);
+        productService.adminDeleteProduct(adminUserId, id);
         return Result.success();
     }
 }
