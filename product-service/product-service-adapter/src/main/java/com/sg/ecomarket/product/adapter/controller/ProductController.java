@@ -92,4 +92,40 @@ public class ProductController {
         Integer stock = productService.getStock(id);
         return Result.success(stock);
     }
+
+    /**
+     * 管理员查询所有商品
+     */
+    @GetMapping("/admin/list")
+    public Result<List<ProductDTO>> adminListAllProducts() {
+        List<ProductDTO> productList = productService.adminListAllProducts();
+        return Result.success(productList);
+    }
+
+    /**
+     * 管理员创建商品
+     */
+    @PostMapping("/admin")
+    public Result<ProductDTO> adminCreateProduct(@Validated @RequestBody ProductCreateCmd cmd) {
+        ProductDTO productDTO = productService.adminCreateProduct(cmd);
+        return Result.success(productDTO);
+    }
+
+    /**
+     * 管理员更新商品
+     */
+    @PutMapping("/admin/{id}")
+    public Result<ProductDTO> adminUpdateProduct(@PathVariable Long id, @Validated @RequestBody ProductUpdateCmd cmd) {
+        ProductDTO productDTO = productService.adminUpdateProduct(id, cmd);
+        return Result.success(productDTO);
+    }
+
+    /**
+     * 管理员删除商品
+     */
+    @DeleteMapping("/admin/{id}")
+    public Result<Void> adminDeleteProduct(@PathVariable Long id) {
+        productService.adminDeleteProduct(id);
+        return Result.success();
+    }
 }
