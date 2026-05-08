@@ -1,6 +1,7 @@
 package com.sg.ecomarket.user.adapter.controller;
 
 import com.sg.ecomarket.common.result.Result;
+import com.sg.ecomarket.user.app.cmd.AdminUserUpdateCmd;
 import com.sg.ecomarket.user.app.cmd.LoginCmd;
 import com.sg.ecomarket.user.app.cmd.RegisterCmd;
 import com.sg.ecomarket.user.app.dto.LoginDTO;
@@ -10,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 用户控制器
@@ -46,5 +48,46 @@ public class UserController {
     public Result<UserDTO> getUserById(@PathVariable Long id) {
         UserDTO userDTO = userService.getUserById(id);
         return Result.success(userDTO);
+    }
+
+    /**
+     * 管理员查询所有用户
+     */
+    @GetMapping("/admin/list")
+    public Result<List<UserDTO>> adminListAllUsers() {
+        Long adminUserId = 1L; // TODO: 从Token解析
+        List<UserDTO> userList = userService.adminListAllUsers(adminUserId);
+        return Result.success(userList);
+    }
+
+    /**
+     * 管理员创建用户
+     */
+    @PostMapping("/admin")
+    public Result<UserDTO> adminCreateUser(@Validated @RequestBody RegisterCmd cmd) {
+        Long adminUserId = 1L; // TODO: 从Token解析
+        UserDTO userDTO = userService.adminCreateUser(adminUserId, cmd);
+        return Result.success(userDTO);
+    }
+
+    /**
+     * 管理员更新用户
+     */
+    @PutMapping("/admin/{id}")
+    public Result<UserDTO> adminUpdateUser(@PathVariable Long id, @Validated @RequestBody AdminUserUpdateCmd cmd) {
+        Long adminUserId = 1L; // TODO: 从Token解析
+        cmd.setId(id);
+        UserDTO userDTO = userService.adminUpdateUser(adminUserId, cmd);
+        return Result.success(userDTO);
+    }
+
+    /**
+     * 管理员删除用户
+     */
+    @DeleteMapping("/admin/{id}")
+    public Result<Void> adminDeleteUser(@PathVariable Long id) {
+        Long adminUserId = 1L; // TODO: 从Token解析
+        userService.adminDeleteUser(adminUserId, id);
+        return Result.success();
     }
 }
