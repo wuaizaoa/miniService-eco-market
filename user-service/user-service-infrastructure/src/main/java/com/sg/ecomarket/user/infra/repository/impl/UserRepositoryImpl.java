@@ -9,6 +9,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户仓库实现
@@ -49,6 +51,17 @@ public class UserRepositoryImpl implements UserRepository {
         LambdaQueryWrapper<UserDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UserDO::getUsername, username);
         return userMapper.selectCount(wrapper) > 0;
+    }
+
+    @Override
+    public List<User> findAll() {
+        List<UserDO> userDOList = userMapper.selectList(null);
+        return userDOList.stream().map(this::toEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(Long id) {
+        userMapper.deleteById(id);
     }
 
     private UserDO toDO(User user) {
