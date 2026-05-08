@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 订单控制器
@@ -59,5 +60,33 @@ public class OrderController {
     public Result<Boolean> updateOrderStatus(@Validated @RequestBody UpdateOrderStatusCmd cmd) {
         boolean result = orderService.updateOrderStatus(cmd.getOrderId(), cmd.getStatus());
         return Result.success(result);
+    }
+
+    /**
+     * 管理员查询所有订单
+     */
+    @GetMapping("/admin/list")
+    public Result<List<OrderDTO>> adminListAllOrders() {
+        List<OrderDTO> orderList = orderService.adminListAllOrders();
+        return Result.success(orderList);
+    }
+
+    /**
+     * 管理员查询订单详情
+     */
+    @GetMapping("/admin/{id}")
+    public Result<OrderDTO> adminGetOrderDetail(@PathVariable Long id) {
+        OrderDTO orderDTO = orderService.adminGetOrderDetail(id);
+        return Result.success(orderDTO);
+    }
+
+    /**
+     * 管理员更新订单状态
+     */
+    @PutMapping("/admin/{id}/status")
+    public Result<OrderDTO> adminUpdateOrderStatus(@PathVariable Long id, @RequestBody Map<String, Integer> request) {
+        Integer status = request.get("status");
+        OrderDTO orderDTO = orderService.adminUpdateOrderStatus(id, status);
+        return Result.success(orderDTO);
     }
 }
