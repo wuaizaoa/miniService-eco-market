@@ -33,4 +33,14 @@ public interface OrderRepository {
      * 更新订单状态
      */
     boolean updateStatus(Long id, Integer status);
+
+    /**
+     * 查询所有订单
+     */
+    List<Order> findAll();
+
+    /**
+     * 查询订单详情（包含订单项）
+     */
+    Order findWithItemsById(Long id);
 }

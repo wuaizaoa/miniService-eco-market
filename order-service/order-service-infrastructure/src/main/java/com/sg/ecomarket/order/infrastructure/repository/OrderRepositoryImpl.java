@@ -100,6 +100,25 @@ public class OrderRepositoryImpl implements OrderRepository {
         return orderMapper.update(null, wrapper) > 0;
     }
 
+    @Override
+    public List<Order> findAll() {
+        List<OrderDO> orderDOList = orderMapper.selectList(null);
+        List<Order> orders = orderDOList.stream().map(this::toEntity).collect(Collectors.toList());
+        
+        // 加载每个订单的订单项
+        for (Order order : orders) {
+            List<com.sg.ecomarket.order.domain.entity.OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
+            order.setOrderItems(orderItems);
+        }
+        
+        return orders;
+    }
+
+    @Override
+    public Order findWithItemsById(Long id) {
+        return findById(id);
+    }
+
     private OrderDO toDO(Order order) {
         if (order == null) {
             return null;
