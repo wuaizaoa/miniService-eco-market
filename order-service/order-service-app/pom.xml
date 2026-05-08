@@ -18,6 +18,10 @@
         </dependency>
         <dependency>
             <groupId>com.sg</groupId>
+            <artifactId>order-service-infrastructure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sg</groupId>
             <artifactId>eco-market-common</artifactId>
         </dependency>
         <dependency>
@@ -27,6 +31,10 @@
         <dependency>
             <groupId>com.alibaba.cola</groupId>
             <artifactId>cola-component-catchlog-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

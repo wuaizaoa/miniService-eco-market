@@ -10,7 +10,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @SpringBootApplication(scanBasePackages = "com.sg.ecomarket")
 @EnableDiscoveryClient
-@MapperScan("com.sg.ecomarket.product.infrastructure.mapper")
+@MapperScan({"com.sg.ecomarket.product.infrastructure.mapper", "com.sg.ecomarket.product.infra.mapper"})
 public class ProductApplication {
 
     public static void main(String[] args) {
