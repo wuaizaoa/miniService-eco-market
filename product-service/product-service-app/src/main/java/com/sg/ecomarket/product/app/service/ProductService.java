@@ -154,6 +154,35 @@ public class ProductService {
         return product.getStock();
     }
 
+    /**
+     * 管理员查询所有商品
+     */
+    public List<ProductDTO> adminListAllProducts() {
+        return getAll();
+    }
+
+    /**
+     * 管理员创建商品
+     */
+    public ProductDTO adminCreateProduct(ProductCreateCmd cmd) {
+        return create(cmd);
+    }
+
+    /**
+     * 管理员更新商品
+     */
+    public ProductDTO adminUpdateProduct(Long productId, ProductUpdateCmd cmd) {
+        cmd.setId(productId);
+        return update(cmd);
+    }
+
+    /**
+     * 管理员删除商品
+     */
+    public void adminDeleteProduct(Long productId) {
+        deleteById(productId);
+    }
+
     private ProductDTO toDTO(Product product) {
         if (product == null) {
             return null;
