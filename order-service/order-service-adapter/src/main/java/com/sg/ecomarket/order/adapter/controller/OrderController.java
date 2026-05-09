@@ -1,5 +1,7 @@
 package com.sg.ecomarket.order.adapter.controller;
 
+import com.sg.ecomarket.common.enums.ErrorCode;
+import com.sg.ecomarket.common.exception.BizException;
 import com.sg.ecomarket.common.result.Result;
 import com.sg.ecomarket.order.client.ProductServiceClient;
 import com.sg.ecomarket.order.app.cmd.CreateOrderCmd;
@@ -72,9 +74,13 @@ public class OrderController {
     private Long getAdminUserIdFromToken(String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            return jwtUtil.getUserIdFromToken(token);
+            try {
+                return jwtUtil.getUserIdFromToken(token);
+            } catch (Exception e) {
+                throw new BizException(ErrorCode.UNAUTHORIZED, "无效的授权令牌");
+            }
         }
-        throw new IllegalArgumentException("无效的授权头");
+        throw new BizException(ErrorCode.UNAUTHORIZED, "缺少授权令牌");
     }
 
     /**
