@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 @Data
 public class ProductUpdateCmd {
 
-    @NotNull(message = "商品ID不能为空")
     private Long id;
 
     private String name;

@@ -13,7 +13,6 @@ public class AdminUserUpdateCmd {
     /**
      * 用户ID
      */
-    @NotNull(message = "用户ID不能为空")
     private Long id;
 
     /**
